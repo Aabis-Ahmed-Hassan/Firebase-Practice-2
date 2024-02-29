@@ -1,21 +1,20 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_practice_code/components/my_button.dart';
 import 'package:firebase_practice_code/constants/app_colors.dart';
-import 'package:firebase_practice_code/screens/auth/login_screen.dart';
+import 'package:firebase_practice_code/screens/auth/continue_with_phone.dart';
+import 'package:firebase_practice_code/screens/auth/signup_screen.dart';
 import 'package:firebase_practice_code/screens/home_screen.dart';
 import 'package:firebase_practice_code/utils/utils.dart';
 import 'package:flutter/material.dart';
 
-import 'continue_with_phone.dart';
-
-class SignupScreen extends StatefulWidget {
-  const SignupScreen({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
 
   @override
-  State<SignupScreen> createState() => _SignupScreenState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _SignupScreenState extends State<SignupScreen> {
+class _LoginScreenState extends State<LoginScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
@@ -36,7 +35,7 @@ class _SignupScreenState extends State<SignupScreen> {
         automaticallyImplyLeading: false,
         backgroundColor: AppColors.defaultColor,
         title: const Text(
-          'Signup Screen',
+          'Login Screen',
           style: TextStyle(color: AppColors.secondaryColor),
         ),
         centerTitle: true,
@@ -81,7 +80,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     height: 30,
                   ),
                   MyButton(
-                    title: 'Sign Up',
+                    title: 'Login',
                     loading: loading,
                     onTap: () {
                       if (_formKey.currentState!.validate()) {
@@ -90,21 +89,19 @@ class _SignupScreenState extends State<SignupScreen> {
                         });
 
                         _fbAuth
-                            .createUserWithEmailAndPassword(
+                            .signInWithEmailAndPassword(
                                 email: emailController.text.toString(),
                                 password: passwordController.text.toString())
                             .then((value) {
-                          setState(() {
-                            loading = false;
-                          });
-                          Utils.showToastMessage('User Created Successfully');
                           Navigator.push(
                               context,
                               MaterialPageRoute(
                                   builder: (context) => HomeScreen()));
+                          setState(() {
+                            loading = false;
+                          });
                         }).onError((error, stackTrace) {
                           Utils.showToastMessage(error.toString());
-                          print(error.toString());
                           setState(() {
                             loading = false;
                           });
@@ -120,7 +117,7 @@ class _SignupScreenState extends State<SignupScreen> {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       const Text(
-                        'Already have an account?',
+                        "Don't have an account?",
                         style: TextStyle(
                           fontSize: 15,
                         ),
@@ -130,12 +127,12 @@ class _SignupScreenState extends State<SignupScreen> {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => const LoginScreen(),
+                              builder: (context) => const SignupScreen(),
                             ),
                           );
                         },
                         child: const Text(
-                          'Login',
+                          'Sign Up',
                           style: TextStyle(
                             fontSize: 15,
                             fontWeight: FontWeight.w500,

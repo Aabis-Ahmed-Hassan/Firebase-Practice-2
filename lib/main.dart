@@ -28,6 +28,7 @@
 // }
 
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_practice_code/constants/app_colors.dart';
 import 'package:firebase_practice_code/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
@@ -48,11 +49,11 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        primarySwatch: AppColors.defaultColor,
         useMaterial3: false,
       ),
       debugShowCheckedModeBanner: false,
-      home:SplashScreen(),
+      home: SplashScreen(),
     );
   }
 }

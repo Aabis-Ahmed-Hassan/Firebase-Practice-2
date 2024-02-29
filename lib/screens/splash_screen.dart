@@ -13,7 +13,6 @@ class _SplashScreenState extends State<SplashScreen> {
   final ss = SplashServices();
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     ss.isLogin(context);
   }
@@ -22,11 +21,6 @@ class _SplashScreenState extends State<SplashScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.black,
-        appBar: AppBar(
-          backgroundColor: Colors.blue,
-          title: Text('Splash Screen'),
-          centerTitle: true,
-        ),
         body: Center(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -37,6 +31,8 @@ class _SplashScreenState extends State<SplashScreen> {
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 38,
+                  fontWeight: FontWeight.w600,
+                  letterSpacing: 1.25,
                 ),
               )
             ],
