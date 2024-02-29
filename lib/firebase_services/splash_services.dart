@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 
-import '../add_post.dart';
+import '../screens/auth/signup_screen.dart';
 
 class SplashServices {
   void isLogin(BuildContext context) {
@@ -10,7 +10,7 @@ class SplashServices {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => LoginScreen(),
+          builder: (context) => SignupScreen(),
         ),
       );
     });

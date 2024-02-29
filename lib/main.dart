@@ -28,7 +28,7 @@
 // }
 
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firebase_practice_code/ui/splash_screen.dart';
+import 'package:firebase_practice_code/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
@@ -52,7 +52,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: false,
       ),
       debugShowCheckedModeBanner: false,
-      home: SplashScreen(),
+      home:SplashScreen(),
     );
   }
 }
