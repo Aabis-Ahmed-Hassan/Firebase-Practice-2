@@ -1,25 +1,28 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_practice_code/components/my_button.dart';
-import 'package:firebase_practice_code/constants/app_colors.dart';
-import 'package:firebase_practice_code/screens/auth/verify_code.dart';
+import 'package:firebase_practice_code/screens/home_screen.dart';
 import 'package:firebase_practice_code/utils/utils.dart';
 import 'package:flutter/material.dart';
 
-class ContinueWithPhone extends StatefulWidget {
-  const ContinueWithPhone({super.key});
+import '../../components/my_button.dart';
+import '../../constants/app_colors.dart';
+
+class VerifyCode extends StatefulWidget {
+  final String verificationId;
+
+  VerifyCode({super.key, required this.verificationId});
 
   @override
-  State<ContinueWithPhone> createState() => _ContinueWithPhoneState();
+  State<VerifyCode> createState() => _VerifyCodeState();
 }
 
-class _ContinueWithPhoneState extends State<ContinueWithPhone> {
-  final phoneController = TextEditingController();
+class _VerifyCodeState extends State<VerifyCode> {
+  final OTPController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
   @override
   void dispose() {
     super.dispose();
-    phoneController.dispose();
+    OTPController.dispose();
   }
 
   bool loading = false;
@@ -54,13 +57,13 @@ class _ContinueWithPhoneState extends State<ContinueWithPhone> {
               child: Column(
                 children: [
                   TextFormField(
-                    controller: phoneController,
+                    controller: OTPController,
                     decoration: InputDecoration(
-                      hintText: '+1 234 5678 910',
+                      hintText: 'Enter 6 digits OTP. ',
                     ),
                     validator: (value) {
                       if (value!.isEmpty) {
-                        return 'Please Enter Your Phone Number';
+                        return 'Please Enter Your OTP';
                       }
                     },
                   ),
@@ -68,41 +71,33 @@ class _ContinueWithPhoneState extends State<ContinueWithPhone> {
                     height: 70,
                   ),
                   MyButton(
-                      title: 'Send Code',
-                      onTap: () {
+                      title: 'Verify OTP',
+                      onTap: () async {
                         setState(() {
                           loading = true;
                         });
 
-                        _fbAuth.verifyPhoneNumber(verificationCompleted: (_) {
-                          setState(() {
-                            loading = false;
-                          });
-                        }, verificationFailed: (e) {
-                          Utils.showToastMessage(
-                            e.toString(),
-                          );
-                          setState(() {
-                            loading = false;
-                          });
-                        }, codeSent: (String verificationCode, int? token) {
+                        final credentials = PhoneAuthProvider.credential(
+                            verificationId: widget.verificationId,
+                            smsCode: OTPController.text);
+
+                        try {
+                          await _fbAuth.signInWithCredential(credentials);
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => VerifyCode(
-                                verificationId: verificationCode,
-                              ),
+                              builder: (context) => HomeScreen(),
                             ),
                           );
                           setState(() {
                             loading = false;
                           });
-                        }, codeAutoRetrievalTimeout: (e) {
+                        } catch (e) {
                           Utils.showToastMessage(e.toString());
                           setState(() {
                             loading = false;
                           });
-                        });
+                        }
                       },
                       loading: loading),
                 ],
