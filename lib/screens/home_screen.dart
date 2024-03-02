@@ -19,14 +19,16 @@ class _HomeScreenState extends State<HomeScreen> {
   FirebaseAuth _fbAuth = FirebaseAuth.instance;
 
   var searchController = TextEditingController();
+  var editController = TextEditingController();
   final ref = FirebaseDatabase.instance.ref('Node 1');
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.defaultColor,
         automaticallyImplyLeading: false,
-        title: Text(
+        title: const Text(
           'HomeScreen',
           style: TextStyle(color: AppColors.secondaryColor),
         ),
@@ -38,7 +40,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => LoginScreen(),
+                    builder: (context) => const LoginScreen(),
                   ),
                 );
               }).onError((error, stackTrace) {
@@ -47,7 +49,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 );
               });
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.logout_outlined,
               color: AppColors.secondaryColor,
             ),
@@ -56,16 +58,16 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
       body: Column(
         children: [
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               horizontal: 10,
             ),
             child: TextFormField(
               controller: searchController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 hintText: 'Search',
                 border: OutlineInputBorder(),
               ),
@@ -119,7 +121,7 @@ class _HomeScreenState extends State<HomeScreen> {
           //fetch data from firebase with FirebaseAnimatedList Widget
           Expanded(
             child: FirebaseAnimatedList(
-                defaultChild: Center(
+                defaultChild: const Center(
                   child: CircularProgressIndicator(),
                 ),
                 query: ref,
@@ -133,6 +135,42 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: Text(
                         snapshot.child('id').value.toString(),
                       ),
+                      trailing: PopupMenuButton(
+                          icon: const Icon(Icons.menu),
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem(
+                                child: ListTile(
+                                  onTap: () {
+                                    Navigator.pop(context);
+
+                                    myShowDialogFunction(
+                                        snapshot
+                                            .child('title')
+                                            .value
+                                            .toString(),
+                                        snapshot.child('id').value.toString());
+                                    print('tapped');
+                                  },
+                                  leading: Icon(
+                                    Icons.edit,
+                                  ),
+                                  title: Text(
+                                    'Edit',
+                                  ),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                  child: ListTile(
+                                leading: Icon(
+                                  Icons.delete,
+                                ),
+                                title: Text(
+                                  'Delete',
+                                ),
+                              ))
+                            ];
+                          }),
                     );
                   } else if (title
                       .toLowerCase()
@@ -144,22 +182,48 @@ class _HomeScreenState extends State<HomeScreen> {
                       subtitle: Text(
                         snapshot.child('id').value.toString(),
                       ),
+                      trailing: PopupMenuButton(
+                          icon: const Icon(Icons.menu),
+                          itemBuilder: (context) {
+                            return [
+                              PopupMenuItem(
+                                child: ListTile(
+                                  onTap: () {
+                                    Navigator.pop(context);
+
+                                    myShowDialogFunction(
+                                        snapshot
+                                            .child('title')
+                                            .value
+                                            .toString(),
+                                        snapshot.child('id').value.toString());
+                                    print('tapped');
+                                  },
+                                  leading: Icon(
+                                    Icons.edit,
+                                  ),
+                                  title: Text(
+                                    'Edit',
+                                  ),
+                                ),
+                              ),
+                              PopupMenuItem(
+                                  child: ListTile(
+                                leading: Icon(
+                                  Icons.delete,
+                                ),
+                                title: Text(
+                                  'Delete',
+                                ),
+                              ))
+                            ];
+                          }),
                     );
                   } else {
                     return Container();
                   }
                 }),
           ),
-
-          Expanded(
-              child: FirebaseAnimatedList(
-                  query: ref,
-                  itemBuilder: (context, snapshot, animation, index) {
-                    return ListTile(
-                      title: Text(snapshot.child('title').value.toString()),
-                      subtitle: Text(snapshot.child('id').value.toString()),
-                    );
-                  })),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -167,17 +231,58 @@ class _HomeScreenState extends State<HomeScreen> {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => AddPost(),
+              builder: (context) => const AddPost(),
             ),
           );
         },
         backgroundColor: AppColors.defaultColor,
-        child: Icon(
+        child: const Icon(
           Icons.add,
           size: 28,
           color: AppColors.secondaryColor,
         ),
       ),
+    );
+  }
+
+  Future<void> myShowDialogFunction(String title, String childName) async {
+    editController.text = title;
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text('Do you want to update?'),
+          content: TextFormField(
+            controller: editController,
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: Text(
+                'Cancel',
+              ),
+            ),
+            TextButton(
+              onPressed: () {
+                ref.child(childName).update({
+                  'title': editController.text.toString(),
+                }).then((value) {
+                  Navigator.pop(context);
+                  Utils.showToastMessage('Post Updated Successfully');
+                }).onError((error, stackTrace) {
+                  Navigator.pop(context);
+                  Utils.showToastMessage(error.toString());
+                });
+              },
+              child: Text(
+                'Update',
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }
