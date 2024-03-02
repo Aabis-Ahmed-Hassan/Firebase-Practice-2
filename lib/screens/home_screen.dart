@@ -77,152 +77,153 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
 
-          //fetching data from firebase with StreamBuilder
-          // Expanded(
-          //   child: StreamBuilder(
-          //     stream: ref.onValue,
-          //     builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-          //       Map<dynamic, dynamic> myMap =
-          //           snapshot.data!.snapshot.value as dynamic;
-          //
-          //       List<dynamic> myList = [];
-          //       myList.clear();
-          //       myList = myMap.values.toList();
-          //
-          //       if (snapshot.hasData) {
-          //         return ListView.builder(
-          //           itemCount: snapshot.data!.snapshot.children.length,
-          //           itemBuilder: (context, index) {
-          //             return ListTile(
-          //               title: Text(
-          //                 myList[index]['title'].toString(),
-          //               ),
-          //               subtitle: Text(
-          //                 myList[index]['id'].toString(),
-          //               ),
-          //             );
-          //           },
-          //         );
-          //       } else {
-          //         return CircularProgressIndicator();
-          //       }
-          //     },
-          //   ),
-          // ),
+//fetching data from firebase with StreamBuilder
+// Expanded(
+//   child: StreamBuilder(
+//     stream: ref.onValue,
+//     builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+//       Map<dynamic, dynamic> myMap =
+//           snapshot.data!.snapshot.value as dynamic;
+//
+//       List<dynamic> myList = [];
+//       myList.clear();
+//       myList = myMap.values.toList();
+//
+//       if (snapshot.hasData) {
+//         return ListView.builder(
+//           itemCount: snapshot.data!.snapshot.children.length,
+//           itemBuilder: (context, index) {
+//             return ListTile(
+//               title: Text(
+//                 myList[index]['title'].toString(),
+//               ),
+//               subtitle: Text(
+//                 myList[index]['id'].toString(),
+//               ),
+//             );
+//           },
+//         );
+//       } else {
+//         return CircularProgressIndicator();
+//       }
+//     },
+//   ),
+// ),
 
-          ///////////////////////////////////////////////////
-          ///////////////////////////////////////////////////
-          ///////////////////////////////////////////////////
-          ///////////////////////////////////////////////////
-          ///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
+///////////////////////////////////////////////////
 
-          //
-          //
-          //fetch data from firebase with FirebaseAnimatedList Widget
+//
+//
+//fetch data from firebase with FirebaseAnimatedList Widget
           Expanded(
             child: FirebaseAnimatedList(
-                defaultChild: const Center(
-                  child: CircularProgressIndicator(),
-                ),
-                query: ref,
-                itemBuilder: (context, snapshot, animation, index) {
-                  String title = snapshot.child('title').value.toString();
-                  if (searchController.text.isEmpty) {
-                    return ListTile(
-                      title: Text(
-                        snapshot.child('title').value.toString(),
-                      ),
-                      subtitle: Text(
-                        snapshot.child('id').value.toString(),
-                      ),
-                      trailing: PopupMenuButton(
-                          icon: const Icon(Icons.menu),
-                          itemBuilder: (context) {
-                            return [
-                              PopupMenuItem(
-                                child: ListTile(
-                                  onTap: () {
-                                    Navigator.pop(context);
+              defaultChild: const Center(
+                child: CircularProgressIndicator(),
+              ),
+              query: ref,
+              itemBuilder: (context, snapshot, animation, index) {
+                String title = snapshot.child('title').value.toString();
+                if (searchController.text.isEmpty) {
+                  return ListTile(
+                    title: Text(
+                      snapshot.child('title').value.toString(),
+                    ),
+                    subtitle: Text(
+                      snapshot.child('id').value.toString(),
+                    ),
+                    trailing: PopupMenuButton(
+                        icon: const Icon(Icons.menu),
+                        itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pop(context);
 
-                                    myShowDialogFunction(
-                                        snapshot
-                                            .child('title')
-                                            .value
-                                            .toString(),
-                                        snapshot.child('id').value.toString());
-                                    print('tapped');
-                                  },
-                                  leading: Icon(
-                                    Icons.edit,
-                                  ),
-                                  title: Text(
-                                    'Edit',
-                                  ),
-                                ),
-                              ),
-                              PopupMenuItem(
-                                  child: ListTile(
+                                  myDialogForUpdate(
+                                      snapshot.child('title').value.toString(),
+                                      snapshot.child('id').value.toString());
+                                },
                                 leading: Icon(
-                                  Icons.delete,
+                                  Icons.edit,
                                 ),
                                 title: Text(
-                                  'Delete',
-                                ),
-                              ))
-                            ];
-                          }),
-                    );
-                  } else if (title
-                      .toLowerCase()
-                      .contains(searchController.text.toLowerCase())) {
-                    return ListTile(
-                      title: Text(
-                        snapshot.child('title').value.toString(),
-                      ),
-                      subtitle: Text(
-                        snapshot.child('id').value.toString(),
-                      ),
-                      trailing: PopupMenuButton(
-                          icon: const Icon(Icons.menu),
-                          itemBuilder: (context) {
-                            return [
-                              PopupMenuItem(
-                                child: ListTile(
-                                  onTap: () {
-                                    Navigator.pop(context);
-
-                                    myShowDialogFunction(
-                                        snapshot
-                                            .child('title')
-                                            .value
-                                            .toString(),
-                                        snapshot.child('id').value.toString());
-                                    print('tapped');
-                                  },
-                                  leading: Icon(
-                                    Icons.edit,
-                                  ),
-                                  title: Text(
-                                    'Edit',
-                                  ),
+                                  'Edit',
                                 ),
                               ),
-                              PopupMenuItem(
-                                  child: ListTile(
+                            ),
+                            PopupMenuItem(
+                                child: ListTile(
+                              onTap: () {
+                                myDialogForDelete(
+                                    snapshot.child('id').value.toString());
+                              },
+                              leading: Icon(
+                                Icons.delete,
+                              ),
+                              title: Text(
+                                'Delete',
+                              ),
+                            ))
+                          ];
+                        }),
+                  );
+                } else if (title
+                    .toLowerCase()
+                    .contains(searchController.text.toLowerCase())) {
+                  return ListTile(
+                    title: Text(
+                      snapshot.child('title').value.toString(),
+                    ),
+                    subtitle: Text(
+                      snapshot.child('id').value.toString(),
+                    ),
+                    trailing: PopupMenuButton(
+                        icon: const Icon(Icons.menu),
+                        itemBuilder: (context) {
+                          return [
+                            PopupMenuItem(
+                              child: ListTile(
+                                onTap: () {
+                                  Navigator.pop(context);
+
+                                  myDialogForUpdate(
+                                      snapshot.child('title').value.toString(),
+                                      snapshot.child('id').value.toString());
+                                },
                                 leading: Icon(
-                                  Icons.delete,
+                                  Icons.edit,
                                 ),
                                 title: Text(
-                                  'Delete',
+                                  'Edit',
                                 ),
-                              ))
-                            ];
-                          }),
-                    );
-                  } else {
-                    return Container();
-                  }
-                }),
+                              ),
+                            ),
+                            PopupMenuItem(
+                                child: ListTile(
+                              onTap: () {
+                                myDialogForDelete(
+                                    snapshot.child('id').value.toString());
+                              },
+                              leading: Icon(
+                                Icons.delete,
+                              ),
+                              title: Text(
+                                'Delete',
+                              ),
+                            ))
+                          ];
+                        }),
+                  );
+                } else {
+                  return Container();
+                }
+              },
+            ),
           ),
         ],
       ),
@@ -245,7 +246,7 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Future<void> myShowDialogFunction(String title, String childName) async {
+  Future<void> myDialogForUpdate(String title, String childName) async {
     editController.text = title;
     return showDialog(
       context: context,
@@ -284,5 +285,37 @@ class _HomeScreenState extends State<HomeScreen> {
         );
       },
     );
+  }
+
+  Future<void> myDialogForDelete(String childName) async {
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text('Are you sure to delete?'),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  ref.child(childName).remove().then((value) {
+                    Navigator.pop(context);
+
+                    Utils.showToastMessage('Post deleted successfully!');
+                  }).onError((error, stackTrace) {
+                    Navigator.pop(context);
+
+                    Utils.showToastMessage(error.toString());
+                  });
+                },
+                child: Text('Yes'),
+              ),
+            ],
+          );
+        });
   }
 }
