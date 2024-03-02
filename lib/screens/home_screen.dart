@@ -8,11 +8,17 @@ import 'package:flutter/material.dart';
 
 import 'auth/login_screen.dart';
 
-class HomeScreen extends StatelessWidget {
-  HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
   FirebaseAuth _fbAuth = FirebaseAuth.instance;
 
+  var searchController = TextEditingController();
   final ref = FirebaseDatabase.instance.ref('Node 1');
   @override
   Widget build(BuildContext context) {
@@ -50,38 +56,63 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          //fetching data from firebase with StreamBuilder
-          Expanded(
-            child: StreamBuilder(
-              stream: ref.onValue,
-              builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
-                Map<dynamic, dynamic> myMap =
-                    snapshot.data!.snapshot.value as dynamic;
-
-                List<dynamic> myList = [];
-                myList.clear();
-                myList = myMap.values.toList();
-
-                if (snapshot.hasData) {
-                  return ListView.builder(
-                    itemCount: snapshot.data!.snapshot.children.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        title: Text(
-                          myList[index]['title'].toString(),
-                        ),
-                        subtitle: Text(
-                          myList[index]['id'].toString(),
-                        ),
-                      );
-                    },
-                  );
-                } else {
-                  return CircularProgressIndicator();
-                }
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 10,
+            ),
+            child: TextFormField(
+              controller: searchController,
+              decoration: InputDecoration(
+                hintText: 'Search',
+                border: OutlineInputBorder(),
+              ),
+              onChanged: (value) {
+                setState(() {});
               },
             ),
           ),
+
+          //fetching data from firebase with StreamBuilder
+          // Expanded(
+          //   child: StreamBuilder(
+          //     stream: ref.onValue,
+          //     builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+          //       Map<dynamic, dynamic> myMap =
+          //           snapshot.data!.snapshot.value as dynamic;
+          //
+          //       List<dynamic> myList = [];
+          //       myList.clear();
+          //       myList = myMap.values.toList();
+          //
+          //       if (snapshot.hasData) {
+          //         return ListView.builder(
+          //           itemCount: snapshot.data!.snapshot.children.length,
+          //           itemBuilder: (context, index) {
+          //             return ListTile(
+          //               title: Text(
+          //                 myList[index]['title'].toString(),
+          //               ),
+          //               subtitle: Text(
+          //                 myList[index]['id'].toString(),
+          //               ),
+          //             );
+          //           },
+          //         );
+          //       } else {
+          //         return CircularProgressIndicator();
+          //       }
+          //     },
+          //   ),
+          // ),
+
+          ///////////////////////////////////////////////////
+          ///////////////////////////////////////////////////
+          ///////////////////////////////////////////////////
+          ///////////////////////////////////////////////////
+          ///////////////////////////////////////////////////
 
           //
           //
@@ -93,25 +124,42 @@ class HomeScreen extends StatelessWidget {
                 ),
                 query: ref,
                 itemBuilder: (context, snapshot, animation, index) {
-                  return ListTile(
-                    leading: Container(
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(50),
+                  String title = snapshot.child('title').value.toString();
+                  if (searchController.text.isEmpty) {
+                    return ListTile(
+                      title: Text(
+                        snapshot.child('title').value.toString(),
                       ),
-                      child: Image(
-                        image: NetworkImage(
-                            'https://media.licdn.com/dms/image/D4E03AQE0jZ3uX-2bhg/profile-displayphoto-shrink_200_200/0/1702916322665?e=2147483647&v=beta&t=XhnVr6bE9Sn99Vkh5gzVEQG1iAf9HdVRU4Y-Y_tGLOE'),
+                      subtitle: Text(
+                        snapshot.child('id').value.toString(),
                       ),
-                    ),
-                    title: Text(
-                      snapshot.child('title').value.toString(),
-                    ),
-                    subtitle: Text(
-                      snapshot.child('id').value.toString(),
-                    ),
-                  );
+                    );
+                  } else if (title
+                      .toLowerCase()
+                      .contains(searchController.text.toLowerCase())) {
+                    return ListTile(
+                      title: Text(
+                        snapshot.child('title').value.toString(),
+                      ),
+                      subtitle: Text(
+                        snapshot.child('id').value.toString(),
+                      ),
+                    );
+                  } else {
+                    return Container();
+                  }
                 }),
-          )
+          ),
+
+          Expanded(
+              child: FirebaseAnimatedList(
+                  query: ref,
+                  itemBuilder: (context, snapshot, animation, index) {
+                    return ListTile(
+                      title: Text(snapshot.child('title').value.toString()),
+                      subtitle: Text(snapshot.child('id').value.toString()),
+                    );
+                  })),
         ],
       ),
       floatingActionButton: FloatingActionButton(
