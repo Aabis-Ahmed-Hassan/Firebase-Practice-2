@@ -50,27 +50,42 @@ class HomeScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          // Expanded(
-          //   child: FirebaseAnimatedList(
-          //     query: ref,
-          //     itemBuilder: (context, snapshot, animation, index) {
-          //       return Card(
-          //         child: Container(
-          //           padding: EdgeInsets.symmetric(
-          //             vertical: 15,
-          //           ),
-          //           child: Column(
-          //             children: [
-          //               Text(snapshot.child('id').value.toString()),
-          //               Text(snapshot.child('title').value.toString()),
-          //             ],
-          //           ),
-          //         ),
-          //       );
-          //     },
-          //   ),
-          // ),
+          //fetching data from firebase with StreamBuilder
+          Expanded(
+            child: StreamBuilder(
+              stream: ref.onValue,
+              builder: (context, AsyncSnapshot<DatabaseEvent> snapshot) {
+                Map<dynamic, dynamic> myMap =
+                    snapshot.data!.snapshot.value as dynamic;
 
+                List<dynamic> myList = [];
+                myList.clear();
+                myList = myMap.values.toList();
+
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                    itemCount: snapshot.data!.snapshot.children.length,
+                    itemBuilder: (context, index) {
+                      return ListTile(
+                        title: Text(
+                          myList[index]['title'].toString(),
+                        ),
+                        subtitle: Text(
+                          myList[index]['id'].toString(),
+                        ),
+                      );
+                    },
+                  );
+                } else {
+                  return CircularProgressIndicator();
+                }
+              },
+            ),
+          ),
+
+          //
+          //
+          //fetch data from firebase with FirebaseAnimatedList Widget
           Expanded(
             child: FirebaseAnimatedList(
                 defaultChild: Center(
