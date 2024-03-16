@@ -7,6 +7,8 @@ import 'package:firebase_practice_code/screens/home_screen.dart';
 import 'package:firebase_practice_code/utils/utils.dart';
 import 'package:flutter/material.dart';
 
+import 'forget_password.dart';
+
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
 
@@ -140,6 +142,27 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                       )
                     ],
+                  ),
+                  const SizedBox(height: 10),
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: TextButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ForgetPassword(),
+                          ),
+                        );
+                      },
+                      child: const Text(
+                        'Forget Password',
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                    ),
                   ),
                   const SizedBox(height: 25),
                   InkWell(

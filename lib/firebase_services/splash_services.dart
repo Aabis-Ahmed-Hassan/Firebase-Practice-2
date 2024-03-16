@@ -2,7 +2,7 @@ import 'dart:async';
 
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_practice_code/screens/auth/login_screen.dart';
-import 'package:firebase_practice_code/screens/home_screen.dart';
+import 'package:firebase_practice_code/screens/garbage_screen.dart';
 import 'package:flutter/material.dart';
 
 class SplashServices {
@@ -17,7 +17,7 @@ class SplashServices {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => HomeScreen(),
+              builder: (context) => GarbageScreen(),
             ),
           );
         },

@@ -206,6 +206,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             PopupMenuItem(
                                 child: ListTile(
                               onTap: () {
+                                Navigator.pop(context);
                                 myDialogForDelete(
                                     snapshot.child('id').value.toString());
                               },

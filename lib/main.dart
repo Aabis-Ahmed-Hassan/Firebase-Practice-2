@@ -29,7 +29,7 @@
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_practice_code/constants/app_colors.dart';
-import 'package:firebase_practice_code/screens/firestore/firestore_screen.dart';
+import 'package:firebase_practice_code/screens/splash_screen.dart';
 import 'package:flutter/material.dart';
 
 import 'firebase_options.dart';
@@ -54,7 +54,7 @@ class MyApp extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       // home: SplashScreen(),
-      home: FirestoreScreen(),
+      home: SplashScreen(),
     );
   }
 }
